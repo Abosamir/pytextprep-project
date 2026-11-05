@@ -32,7 +32,7 @@ def lower_case(text: str) -> str:
     Returns:
         str: the result text after lowering it.
     """
-    return text.lower()
+    return text.casefold()
 
 @require_str
 def normalize_whitespace(text: str) -> str:
@@ -117,7 +117,6 @@ def remove_punctuation(text: str, keep_emojis: bool = True):
         for i in range(len(text)):
 
             if text[i] in pun:
-                x = text[i]
                 if text[i] =="'" and text[i-1] == "n":
                     result_text += "'"
                 else:

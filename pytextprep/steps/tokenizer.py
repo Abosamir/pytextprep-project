@@ -1,6 +1,8 @@
-# word_tokenize, sent_tokenize
 import re
-from cleaning import require_str
+from importlib.resources import files
+from pytextprep import require_str
+from pathlib import Path
+
 
 GET_TOKENS = re.compile(r"[A-Za-z0-9]+(?:['-][A-Za-z0-9]+)*")
 SPLIT_PATERN = re.compile(r"""
@@ -24,11 +26,27 @@ def word_tokenize(text: str) -> list[str]:
     return re.findall(GET_TOKENS, text)
 
 @require_str
-def sent_tokenize(text: str) -> str:
-    pass
+def sent_tokenize(text: str) -> list[str]:
+    """tokenize based on different things like ., ! or ?
+
+    Args:
+        text (str): the raw input text
+
+    Returns:
+        list[str]: words after split based on th
+    """
+
+    tokenized_words = []
+
+    for word in SPLIT_PATERN.split(text):
+        tokenized_words.append(word)
+
+    return tokenized_words
 
 
 
 
 if __name__ == "__main__":
-    print(word_tokenize(10))
+
+
+    pass
