@@ -40,17 +40,19 @@ def remove_stopwords(text: str, custom_words=None, extra_only=False) -> str:
     if not extra_only:
         if custom_words:
             for word in tokenized_words:
-                if word not in custom_words and word not in STOPWORDS:
+                if word.lower() not in custom_words and word.lower() not in STOPWORDS:
                     result_text += word + " "
         else:
             for word in tokenized_words:
-                if word not in STOPWORDS:
+                if word.lower() not in STOPWORDS:
                     result_text += word + " "
     else:
         if custom_words:
             for word in tokenized_words:
-                if word not in custom_words:
+                if word.lower() not in custom_words:
                     result_text += word + " "
+        else:
+            result_text = text + " "
 
 
     return result_text[:-1]
@@ -78,5 +80,4 @@ def expand_contractions(text: str) -> str:
 
 if __name__ == "__main__":
 
-    print(remove_stopwords("This is not a good movie", custom_words=["This", "is"],extra_only=True))
-    print(expand_contractions("They’re here"))
+    print(remove_stopwords("THE end"))

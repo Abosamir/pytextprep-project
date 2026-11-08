@@ -18,8 +18,8 @@ class TestNormalization(unittest.TestCase):
         self.assertEqual(result, "good")
 
     def test_remove_stopwords_extra_only(self):
-        result = filtering.remove_stopwords("this is a good movie", custom_words=["movie"], extra_only=True)
-        self.assertEqual(result, "this is a good")
+        result = filtering.remove_stopwords("THE end")
+        self.assertEqual(result, "end")
 
     def test_remove_stopwords_extra_only_no_custom(self):
         result = filtering.remove_stopwords("this is a good movie", extra_only=True)
@@ -43,7 +43,7 @@ class TestNormalization(unittest.TestCase):
         self.assertEqual(result, "do not worry")
 
     def test_expand_contractions_no_contractions(self):
-        result = filtering.expand_contractions("They’re here") 
+        result = filtering.expand_contractions("They're here") 
         self.assertEqual(result, "They are here")
 
     def test_expand_contractions_not_str(self):

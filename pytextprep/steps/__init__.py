@@ -18,3 +18,6 @@ from .tokenizer import (
     word_tokenize,
     sent_tokenize,
 )
+
+from . import arabic
+from . import stemming

@@ -41,9 +41,9 @@ class Pipeline:
     def transform(self, text, return_tokens=False):
         for name, params, func in self.steps:
             text = func(text, **params)
-            if return_tokens:
-                return word_tokenize(text)
-            return text
+        if return_tokens:
+            return word_tokenize(text)
+        return text
 
     def transform_batch(self, texts, return_tokens = False):
 
@@ -51,15 +51,40 @@ class Pipeline:
 
         for text in texts:
             result_transofrms.append(self.transform(text, return_tokens = return_tokens))
+        return result_transofrms
 
     def __repr__(self):
         lines = []
 
-        for name, params in self.steps:
+        for name, params, _ in self.steps:
             lines.append(f" {name}({params})")
 
         return "Pipline(\n" + "\n".join(lines) + "\n)"
 
 
 if __name__ == "__main__":
-    pass
+
+    nlp_pipeline = Pipeline([
+        ("remove_urls", {}),
+        ("expand_contractions", {}),
+        ("remove_stopwords", {"custom_words": ["check"]}),
+        ("remove_punctuation", {"keep_emojis": False}),
+        ("lower_case", {}),
+    ])
+
+    raw_text = "I don't like spam emails! Visit https://test.com right NOW."
+    processed_text = nlp_pipeline.transform(raw_text)
+
+    print("Raw:      ", raw_text)
+    print("Processed:", processed_text)
+    # Processed: not like spam email visit right
+
+    arabic = Pipeline([("normalize_arabic", {}), ("remove_punctuation", {})])
+    print(arabic.transform("أَهْلاً بِكُم في الـــمـعهد!!") == "اهلا بكم في المعهد")
+
+    pipe = Pipeline([]).transform("  Hi  ")
+    print(pipe)
+    pipe2 = Pipeline([("lower_case", {})]).transform_batch(["a", "", "b"])
+    print(pipe2)
+    pipe3 = Pipeline([("remove_url", {})]) 
+    print(pipe3)

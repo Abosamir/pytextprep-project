@@ -1,12 +1,7 @@
-# one module per group-3 feature you choose
-from pytextprep import require_str
-from pytextprep.registry import register_step
+from .cleaning import require_str
+from ..registry import register_step
 
-TASHKEEL = set(range(0x064B, 0x0653)) | {0x0670} | {0x0640}
-ALEF =  set(range(0x0622, 0x0628)) 
-YA2 = 0X064A
-taa_marbuta = True
-TAA_MARBUTA = 0x0629
+
 VOWELS = {"a", "o", "e", "i", "u"}
 
 def cv_pattern(word: str) -> str:
@@ -179,39 +174,7 @@ def stem(word: str) -> str:
 
     return word
 
-@register_step("normalize_arabic")
-@require_str
-def normalize_arabic(text: str) -> str:
-    """remove tashkeel from the arabic words
-
-    Args:
-        text (str): arabic word with tashkeel
-
-    Returns:
-        str: arabic word without tashkeel 
-    """
-    result_text = ""
-    for ch in text:
-        if taa_marbuta:
-            if ord(ch) == TAA_MARBUTA:
-                result_text += "ه"
-                continue
-
-        if ord(ch) == YA2:
-            result_text += "ى"
-            continue
-
-        if ord(ch) in ALEF:
-            result_text += "ا"
-            continue
-
-        if ord(ch) not in TASHKEEL:
-            result_text += ch
-            continue
-    return result_text
-
 
 if __name__ == "__main__":
-
-
-    print(stem("poines"))
+    
+    print(stem("ponies"))
