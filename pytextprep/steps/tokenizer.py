@@ -1,7 +1,5 @@
 import re
-from importlib.resources import files
-from pytextprep import require_str
-from pathlib import Path
+from .cleaning import require_str
 
 
 GET_TOKENS = re.compile(r"[A-Za-z0-9]+(?:['-][A-Za-z0-9]+)*")

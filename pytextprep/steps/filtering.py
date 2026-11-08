@@ -1,7 +1,7 @@
-from pytextprep import require_str
-from tokenizer import word_tokenize
+from .cleaning import require_str
+from .tokenizer import word_tokenize
 from importlib.resources import files
-
+from pytextprep.registry import register_step
 
 STOPWORDS = set(
     files("pytextprep.resources")
@@ -9,15 +9,18 @@ STOPWORDS = set(
     .read_text(encoding="utf-8")
     .splitlines()
 )
+
 text = files("pytextprep.resources").joinpath("contractions_en.tsv").read_text(encoding="utf-8")
 
 CONTRACTIONS = {}
 for line in text.splitlines():
     if not line.strip():
-        continue                      # skip empty lines
+        continue                      
     short, full = line.split("\t", 1)
     CONTRACTIONS[short] = full
 
+
+@register_step("remove_stopwords", params={"custom_words", "extra_only"})
 @require_str
 def remove_stopwords(text: str, custom_words=None, extra_only=False) -> str:
     """Remove stop words from a raw text with considering the custom words
@@ -52,6 +55,7 @@ def remove_stopwords(text: str, custom_words=None, extra_only=False) -> str:
 
     return result_text[:-1]
 
+@register_step("expand_contractions")
 @require_str
 def expand_contractions(text: str) -> str:
     """Transform contraction words into full form.
@@ -70,8 +74,9 @@ def expand_contractions(text: str) -> str:
             result_str += CONTRACTIONS[word] + " "
         else:
             result_str += word + " "
-    return result_str
+    return result_str[:-1]
 
 if __name__ == "__main__":
+
     print(remove_stopwords("This is not a good movie", custom_words=["This", "is"],extra_only=True))
-    print(expand_contractions("Don't worry, I'm here"))
+    print(expand_contractions("They’re here"))

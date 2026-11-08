@@ -3,10 +3,12 @@ import string
 from functools import wraps
 from collections import Counter
 import re
+from pytextprep.registry import register_step
+
 
 SPACES_RE = re.compile(r"\s+")
-URL_RE = re.compile(r"https?://\S+|www\.[^\s,!?;]+")
-MAIL_RE = re.compile(r"\S+@\S+")
+URL_RE = re.compile(r"https?://\S*[^\s.,!?;:]|www\.\S*[^\s.,!?;:]")
+MAIL_RE = re.compile(r"\S+@\S+[\s]?")
 
 
 def require_str(func):
@@ -21,7 +23,7 @@ def require_str(func):
 
     return wrapper
 
-
+@register_step("lower_case")
 @require_str
 def lower_case(text: str) -> str:
     """This function is to make all the text letters to be in lowercase.
@@ -34,6 +36,7 @@ def lower_case(text: str) -> str:
     """
     return text.casefold()
 
+@register_step("normalize_whitespace")
 @require_str
 def normalize_whitespace(text: str) -> str:
     """This function is made to remove multiple white spaces and taps and also newlines.
@@ -47,6 +50,8 @@ def normalize_whitespace(text: str) -> str:
 
     return SPACES_RE.sub(" ", text)
 
+
+@register_step("remove_urls", params={"replace_with"})
 @require_str
 def remove_urls(text: str, replace_with: str = "") -> str:
 
@@ -62,6 +67,7 @@ def remove_urls(text: str, replace_with: str = "") -> str:
 
     return URL_RE.sub(replace_with, text)
 
+@register_step("remove_emails", params={"replace_with"})
 @require_str
 def remove_emails(text: str, replace_with: str = "") -> str:
     
@@ -77,6 +83,7 @@ def remove_emails(text: str, replace_with: str = "") -> str:
 
     return MAIL_RE.sub(replace_with, text)
 
+@register_step("is_emoji")
 @require_str
 def is_emoji(char: str) -> bool:
     """detect if a given character is an emoji.
@@ -90,6 +97,7 @@ def is_emoji(char: str) -> bool:
 
     return unicodedata.category(char) == 'So'
 
+@register_step("remove_punctuation", params={"keep_emojis"})
 @require_str
 def remove_punctuation(text: str, keep_emojis: bool = True):
     """This function is made to remove punctuation from a string and also emojis if the user want
@@ -128,6 +136,7 @@ def remove_punctuation(text: str, keep_emojis: bool = True):
                 result_text += text[i]
     return result_text
 
+@register_step("normalize_repeating_chars", params={"keep"})
 @require_str
 def normalize_repeating_chars(text, keep=1):
 
